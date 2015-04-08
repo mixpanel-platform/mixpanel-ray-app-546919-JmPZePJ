@@ -53,8 +53,8 @@
       var eventGraph6  = $('#dashSix').MPChart({chartType: 'line'});
       
       var params = {
-          from: dateRange.from,
-          to: dateRange.to,
+          from: '2015-01-01',
+          to: '2015-01-01',
           type: 'general',
           unit: 'day'
         };
@@ -73,6 +73,9 @@
             propName5 = 'Device Type',
             propName6 = 'Current Location',
             dateRange = dateSelect.MPDatepicker('value');
+        
+        params['from'] = dateRange.from;
+        params['to'] = dateRange.to;
 
         if (dateRange) {
           MP.api.segment(eventName1, propName1, params).done(function(results) {

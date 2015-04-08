@@ -7,43 +7,91 @@
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
   </head>
   <body class="mixpanel-platform-body">
-    <div class="mixpanel-platform-section">
-      <div id="eventSelect" style="float: left;"></div>
-      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
-      <div id="propSelect" style="float: left;"></div>
-      <div id="dateSelect" style="float: right;"></div>
-      <div style="clear: both;"></div>
-      <div id="graph"></div>
+    
+    <div class="row">
+      <div class="col-xs-6">
+        <h3>Most Watched Programs</h3>
+        <div id="dashOne" class="hideHeader"></div>
+      </div>
+      <div class="col-xs-6">
+        <h3>Watches by Play Location</h3>
+        <div id="dashTwo" class="hideHeader"></div>
+      </div>
     </div>
-    <div id="table"></div>
+    <div class="row">
+      <div class="col-xs-6">
+        <h3>Favoriting Channels (by Name)</h3>
+        <div id="dashThree" class="hideHeader"></div>
+      </div>
+      <div class="col-xs-6">
+        <h3>Onboarding Completion</h3>
+        <div id="dashFour" class="hideHeader"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <h3>Remote Usage (by Remote Type)</h3>
+        <div id="dashFive" class="hideHeader"></div>
+      </div>
+      <div class="col-xs-6">
+        <h3>Alert Creation (by Location)</h3>
+        <div id="dashSix" class="hideHeader"></div>
+      </div>
+    </div>
+    
     <script>
-      var eventSelect = $('#eventSelect').MPEventSelect();
-      var propSelect  = $('#propSelect').MPPropertySelect();
       var dateSelect  = $('#dateSelect').MPDatepicker();
-      var eventGraph  = $('#graph').MPChart({chartType: 'line'});
-      var eventTable  = $('#table').MPTable({
-        showPercentages: true,
-        firstColHeader: 'Event'
-      });
+      var eventGraph1  = $('#dashOne').MPChart({chartType: 'line'});
+      var eventGraph2  = $('#dashTwo').MPChart({chartType: 'line'});
+      var eventGraph3  = $('#dashThree').MPChart({chartType: 'line'});
+      var eventGraph4  = $('#dashFour').MPChart({chartType: 'line'});
+      var eventGraph5  = $('#dashFive').MPChart({chartType: 'line'});
+      var eventGraph6  = $('#dashSix').MPChart({chartType: 'line'});
+      
+      var params = {
+          from = dateRange.from,
+          to = dateRange.to,
+          type: 'general',
+          unit: 'day'
+        };
 
       var runQuery = function() {
-        var eventName = eventSelect.MPEventSelect('value'),
-            propName  = propSelect.MPPropertySelect('value'),
+        var eventName1 = 'Watch by Location: User initiates Watch Event',
+            eventName2 = 'Watch by Location: User initiates Watch Event',
+            eventName3 = 'Rec Profile: User Favorites a channel',
+            eventName4 = 'Obding: User ends onboarding',
+            eventName5 = 'Remotes: User presses remote button',
+            eventName6 = 'Rec Profile: User creates an Alert',
+            propName1 = 'Watch Event',
+            propName2 = 'Current location',
+            propName3 = 'Channel Name',
+            propName4 = '$lib_version',
+            propName5 = 'Device Type',
+            propName6 = 'Current Location',
             dateRange = dateSelect.MPDatepicker('value');
 
-        if (eventName) {
-          MP.api.segment(eventName, propName, dateRange).done(function(results) {
-            eventGraph.MPChart('setData', results);
-            eventTable.MPTable('setData', results);
+        if (dateRange) {
+          MP.api.segment(eventName1, propName1, params).done(function(results) {
+            eventGraph1.MPChart('setData', results);
+          });
+          MP.api.segment(eventName2, propName2, params).done(function(results) {
+            eventGraph2.MPChart('setData', results);
+          });
+          MP.api.segment(eventName3, propName3, params).done(function(results) {
+            eventGraph3.MPChart('setData', results);
+          });
+          MP.api.segment(eventName4, propName4, params).done(function(results) {
+            eventGraph4.MPChart('setData', results);
+          });
+          MP.api.segment(eventName5, propName5, params).done(function(results) {
+            eventGraph5.MPChart('setData', results);
+          });
+          MP.api.segment(eventName6, propName6, params).done(function(results) {
+            eventGraph6.MPChart('setData', results);
           });
         }
       };
-      eventSelect.on('change', function(e, eventName) {
-        propSelect.MPPropertySelect('setEvent', eventName);
-        $("#by").show();
-        runQuery();
-      });
-      propSelect.on('change', runQuery);
+      
       dateSelect.on('change', runQuery);
     </script>
   </body>
